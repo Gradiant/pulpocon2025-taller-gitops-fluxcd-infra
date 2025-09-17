@@ -1,0 +1,48 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: apisix
+spec:
+  controllerName: "apisix.apache.org/apisix-ingress-controller"
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: apisix
+  namespace: ingress-apisix
+spec:
+  gatewayClassName: apisix
+  listeners:
+
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes: { namespaces: { from: All } }  
+
+  infrastructure:
+    parametersRef:
+      group: apisix.apache.org
+      kind: GatewayProxy
+      name: apisix-config
+
+---
+apiVersion: apisix.apache.org/v1alpha1
+kind: GatewayProxy
+metadata:
+  name: apisix-config
+  namespace: ingress-apisix
+spec:
+  provider:
+    type: ControlPlane
+    controlPlane:
+      endpoints:
+        - http://apisix-admin.ingress-apisix.svc.cluster.local:9180
+      auth:
+        type: AdminKey
+        adminKey:
+          valueFrom: 
+            secretKeyRef:
+              name: apisix-admin-credentials
+              key: admin

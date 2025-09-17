@@ -1,0 +1,26 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: inventory-app-frontend
+  namespace: inventory-app
+spec:
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: fluxbot
+        email: fluxbot@noreply.gradiant.org
+      messageTemplate: "ci: update inventory-app/frontend image"
+    push:
+      branch: main
+  update:
+    strategy: Setters
+    path: ./apps/inventory-app/frontend

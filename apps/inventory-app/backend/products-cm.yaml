@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-products
+  namespace: inventory-app
+data:
+  products.json: |
+    [
+      { "name":"Pulpo a la Gallega","description":"Tradicional pulpo cocido con patatas, aceite de oliva y pimentón dulce","sku":"PULPO-001","stock":25,"minStock":5,"imageUrl":"https://imag.bonviveur.com/pulpo-a-la-gallega-recien-hecho.jpg" },
+      { "name":"Queixo Tetilla","description":"Queso gallego de leche de vaca con forma de tetilla, DOP","sku":"QUESO-002","stock":18,"minStock":3,"imageUrl":"https://pepekitchen.com/wp-content/uploads/2009/07/queso-de-tetilla2.jpg" },
+      { "name":"Vieiras de Santiago","description":"Vieiras frescas de las Rías Baixas, símbolo del Camino de Santiago","sku":"VIEIRA-003","stock":12,"minStock":2,"imageUrl":"https://i0.wp.com/www.tee-travel.com/blog/wp-content/uploads/2011/03/Camino-Santiago-Compostela-Vieiras-Horno-Plato-Tipico-Galicia.jpg?resize=1200%2C871&ssl=1" },
+      { "name":"Albariño Rías Baixas","description":"Vino blanco gallego DOP de la zona de Rías Baixas","sku":"VINO-004","stock":45,"minStock":10,"imageUrl":"https://secretsommelier.com/images/galicia/08_atlantic_alborino.jpg" },
+      { "name":"Empanada Gallega","description":"Empanada tradicional con atún, pimientos y cebolla","sku":"EMPA-005","stock":8,"minStock":2,"imageUrl":"https://i.blogs.es/9e550f/empanada-gallega/840_560.jpg" },
+      { "name":"Nécoras de A Coruña","description":"Nécoras frescas de las costas de A Coruña","sku":"NECOR-006","stock":15,"minStock":3,"imageUrl":"https://ellangostinodesanlucar.com/wp-content/uploads/2021/11/necora-cocida-gallega.jpg" },
+      { "name":"Tarta de Santiago","description":"Tarta tradicional de almendras con la cruz de Santiago","sku":"TARTA-007","stock":22,"minStock":5,"imageUrl":"https://imag.bonviveur.com/foto-de-la-tarta-de-santiago.jpg" },
+      { "name":"Percebes de Costa da Morte","description":"Percebes frescos de la Costa da Morte, considerados los mejores","sku":"PERCE-008","stock":6,"minStock":1,"imageUrl":"https://www.coruna.gal/IMG/P_Contenido_1453790694521_1152702150702_1920_1280_U_48e1729d6edd9ba362ac8b566a17f6f.png" },
+      { "name":"Orujo de Galicia","description":"Aguardiente tradicional gallego elaborado con orujo de uva","sku":"ORUJO-009","stock":32,"minStock":8,"imageUrl":"https://i.blogs.es/6c3572/orujo_hierbas_casero/650_1200.jpeg" }
+    ]

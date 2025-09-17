@@ -1,0 +1,12 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: inventory-app-backend
+  namespace: inventory-app
+spec:
+  imageRepositoryRef:
+    name: inventory-app-backend
+  policy:
+    semver:
+      range: ">=0.1.0"

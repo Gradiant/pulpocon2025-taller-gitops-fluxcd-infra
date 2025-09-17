@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-app-backend
+  namespace: inventory-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-app-backend
+  template:
+    metadata:
+      labels:
+        app: inventory-app-backend
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-pat
+      securityContext:
+        fsGroup: 1001
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/local/kind/inventory-data
+            type: DirectoryOrCreate
+        - name: products
+          configMap:
+            name: inventory-products
+      initContainers:
+        - name: init-perms
+          image: busybox:1.36
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+          command: ["sh","-c","mkdir -p /data && chown -R 1001:1001 /data"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: inventory-app-backend
+          image: srgottfried/pulpo-inventory-app-backend:v0.2.0 # {"$imagepolicy": "inventory-app:inventory-app-backend"}
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: STORAGE_ADAPTER
+              value: "sqlite"
+            - name: SQLITE_DB_PATH
+              value: "/data/inventory.db"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: products
+              mountPath: /seed/products.json
+              subPath: products.json
+              readOnly: true
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    node -e '
+                      (async () => {
+                        const fs = require("fs");
+                        const sleep = ms => new Promise(r=>setTimeout(r,ms));
+                        // esperamos a que el backend escuche
+                        for (let i=0;i<30;i++){
+                          try { const r = await fetch("http://127.0.0.1:3000/health"); if (r.ok) break; } catch {}
+                          await sleep(1000);
+                        }
+                        // si ya hay datos, no sembrar
+                        try {
+                          const ex = await (await fetch("http://127.0.0.1:3000/products")).json();
+                          if (Array.isArray(ex) && ex.length>0) { console.log("DB already seeded"); return; }
+                        } catch {}
+                        // lee y siembra
+                        const items = JSON.parse(fs.readFileSync("/seed/products.json","utf-8"));
+                        console.log(`Seeding ${items.length} products...`);
+                        for (const p of items) {
+                          const payload = {
+                            name: p.name,
+                            description: p.description,
+                            sku: p.sku,
+                            imageUrl: p.imageUrl || "",
+                            initialStock: Number(p.stock) || 0,
+                            minStock: Number(p.minStock) || 0
+                          };
+                          const res = await fetch("http://127.0.0.1:3000/products", {
+                            method:"POST",
+                            headers:{ "Content-Type":"application/json" },
+                            body: JSON.stringify(payload)
+                          });
+                          if (res.status === 409) { console.log(`SKU ${p.sku} already exists`); continue; }
+                          if (!res.ok) {
+                            const t = await res.text();
+                            console.error(`Seed error ${res.status} ${p.sku}: ${t}`);
+                          } else {
+                            const j = await res.json();
+                            console.log(`Created ${j.sku}`);
+                          }
+                        }
+                      })().catch(e => { console.error(e); });
+                    '
+          readinessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 500m, memory: 512Mi }

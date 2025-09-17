@@ -1,0 +1,9 @@
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  namespace: kube-system
+  name: l2announcement-policy
+spec:
+  externalIPs: false
+  loadBalancerIPs: true

@@ -1,0 +1,10 @@
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: static-pool
+  namespace: kube-system
+spec:
+  blocks:
+  - start: "172.18.100.1"
+    stop: "172.18.100.126"

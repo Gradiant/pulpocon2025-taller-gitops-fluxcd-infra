@@ -1,0 +1,135 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-crds
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/crds
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-namespaces
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/namespaces
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-secrets
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/secrets
+  prune: true
+  wait: true
+  timeout: 5m0s
+  dependsOn:
+    - name: cluster-namespaces
+    - name: cluster-crds
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-networks
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/networks
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  dependsOn:
+    - name: cluster-namespaces
+    - name: cluster-crds
+    - name: cluster-secrets
+  wait: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-operators
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/operators
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m0s
+  dependsOn:
+    - name: cluster-namespaces
+    - name: cluster-crds
+    - name: cluster-secrets
+  wait: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: controllers-apisix
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/controllers/apisix
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  dependsOn:
+    - name: cluster-namespaces
+    - name: cluster-crds
+    - name: cluster-networks
+    - name: cluster-secrets
+    - name: cluster-operators
+  wait: true
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-gateways
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./infrastructure/gateways
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  dependsOn:
+    - name: cluster-namespaces
+    - name: cluster-crds
+    - name: cluster-networks
+    - name: cluster-secrets
+    - name: cluster-operators
+    - name: controllers-apisix
+  wait: true
