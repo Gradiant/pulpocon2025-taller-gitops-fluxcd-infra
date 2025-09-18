@@ -38,7 +38,7 @@ spec:
               mountPath: /data
       containers:
         - name: inventory-app-backend
-          image: srgottfried/pulpo-inventory-app-backend:v0.2.0 # {"$imagepolicy": "inventory-app:inventory-app-backend"}
+          image: <usuario>/pulpo-inventory-app-backend:v0.1.0 # {"$imagepolicy": "inventory-app:inventory-app-backend"}
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001

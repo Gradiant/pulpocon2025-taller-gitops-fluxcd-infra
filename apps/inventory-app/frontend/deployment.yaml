@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: inventory-app-frontend
-          image: srgottfried/pulpo-inventory-app-frontend:v0.2.1 # {"$imagepolicy": "inventory-app:inventory-app-frontend"}
+          image: <usuario>/pulpo-inventory-app-frontend:v0.1.0 # {"$imagepolicy": "inventory-app:inventory-app-frontend"}
           ports:
             - containerPort: 80
           env:

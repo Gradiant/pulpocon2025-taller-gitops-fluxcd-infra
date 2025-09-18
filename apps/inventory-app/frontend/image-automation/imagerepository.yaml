@@ -5,5 +5,5 @@ metadata:
   name: inventory-app-frontend
   namespace: inventory-app
 spec:
-  image: srgottfried/pulpo-inventory-app-frontend
+  image: <usuario>/pulpo-inventory-app-frontend
   interval: 1m

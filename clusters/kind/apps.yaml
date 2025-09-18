@@ -1,47 +1,47 @@
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: apps-frontend
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/inventory-app/frontend
-  prune: true
-  wait: true
-  dependsOn:
-    - name: cluster-namespaces
-    - name: cluster-crds
-    - name: cluster-networks
-    - name: cluster-secrets
-    - name: cluster-operators
-    - name: controllers-apisix
-    - name: cluster-gateways
-  timeout: 10m0s
+# ---
+# apiVersion: kustomize.toolkit.fluxcd.io/v1
+# kind: Kustomization
+# metadata:
+#   name: apps-frontend
+#   namespace: flux-system
+# spec:
+#   interval: 1m0s
+#   sourceRef:
+#     kind: GitRepository
+#     name: flux-system
+#   path: ./apps/inventory-app/frontend
+#   prune: true
+#   wait: true
+#   dependsOn:
+#     - name: cluster-namespaces
+#     - name: cluster-crds
+#     - name: cluster-networks
+#     - name: cluster-secrets
+#     - name: cluster-operators
+#     - name: controllers-apisix
+#     - name: cluster-gateways
+#   timeout: 10m0s
 
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: apps-backend
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/inventory-app/backend
-  prune: true
-  wait: true
-  dependsOn:
-    - name: cluster-namespaces
-    - name: cluster-crds
-    - name: cluster-networks
-    - name: cluster-secrets
-    - name: cluster-operators
-    - name: controllers-apisix
-    - name: cluster-gateways
-  timeout: 10m0s
+# ---
+# apiVersion: kustomize.toolkit.fluxcd.io/v1
+# kind: Kustomization
+# metadata:
+#   name: apps-backend
+#   namespace: flux-system
+# spec:
+#   interval: 1m0s
+#   sourceRef:
+#     kind: GitRepository
+#     name: flux-system
+#   path: ./apps/inventory-app/backend
+#   prune: true
+#   wait: true
+#   dependsOn:
+#     - name: cluster-namespaces
+#     - name: cluster-crds
+#     - name: cluster-networks
+#     - name: cluster-secrets
+#     - name: cluster-operators
+#     - name: controllers-apisix
+#     - name: cluster-gateways
+#   timeout: 10m0s
