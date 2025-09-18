@@ -10,7 +10,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/Gradiant/pulpocon2025-taller-gitops-fluxcd-infra.git
+  url: ssh://git@github.com/<usuario>/pulpocon2025-taller-gitops-fluxcd-infra.git
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

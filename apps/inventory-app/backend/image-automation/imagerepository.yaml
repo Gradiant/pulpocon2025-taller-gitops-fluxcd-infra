@@ -5,7 +5,7 @@ metadata:
   name: inventory-app-backend
   namespace: inventory-app
 spec:
-  image: srgottfried/pulpo-inventory-app-backend
+  image: <usuario>/pulpo-inventory-app-backend
   interval: 1m
   secretRef:
     name: dockerhub-pat
