@@ -9,6 +9,7 @@ spec:
   url: https://charts.apiseven.com
 
 ---
+# https://artifacthub.io/packages/helm/apisix/apisix
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -32,17 +33,20 @@ spec:
   values:
     etcd:
       replicaCount: 1
+      image:
+        registry: docker.io
+        repository: bitnamilegacy/etcd
+        tag: 3.5.10-debian-11-r2
+        pullPolicy: IfNotPresent
     service:
-      type: NodePort
+      type: ClusterIP
+      externalTrafficPolicy: null
       http:
         enabled: true
         servicePort: 80
         containerPort: 9080
-        nodePort: 30080
       tls:
         servicePort: 443
-        nodePort: 30443
-      externalTrafficPolicy: null
     apisix:
       ssl:
         enabled: true
